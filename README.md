@@ -309,6 +309,410 @@ root=/dev/mmcblk0p2
 ```
 
 ---
+# 14. Linux Kernel
 
+The **Linux Kernel** is the **third major component of an Embedded Linux system**. It is the core of the operating system and acts as a bridge between **applications** and **hardware**.
+
+---
+
+# Three Main Jobs of the Kernel
+
+## 1. Manage System Resources
+
+The kernel manages all important system resources, such as:
+
+- CPU
+- RAM (Memory)
+- Storage
+- Network
+- USB devices
+
+### Example
+
+If Chrome, VS Code, and VLC are running at the same time, the kernel decides:
+
+- Which application gets CPU time
+- How much memory each application receives
+- Which application should wait
+
+Without the kernel, applications would compete for hardware resources and the system would become unstable.
+
+---
+
+## 2. Interface with Hardware
+
+Applications cannot directly communicate with hardware.
+
+Instead, they request the kernel, and the kernel communicates with hardware using **device drivers**.
+
+### Example
+
+```text
+Application
+     │
+     ▼
+ Linux Kernel
+     │
+     ▼
+ Device Driver
+     │
+     ▼
+ Hardware
+```
+
+Example:
+
+```c
+printf("Hello");
+```
+
+Although it looks simple, `printf()` eventually reaches the kernel, which sends the output to the display or terminal.
+
+---
+
+## 3. Provide an API
+
+The kernel provides an **Application Programming Interface (API)** through **system calls**.
+
+Applications use functions like:
+
+- `open()`
+- `read()`
+- `write()`
+- `close()`
+- `fork()`
+
+These allow programs to safely request services from the kernel.
+
+---
+
+# User Space vs Kernel Space
+
+Linux separates execution into two different spaces.
+
+```text
++---------------------------+
+|        User Space         |
+|---------------------------|
+| Chrome                    |
+| VS Code                   |
+| Your C Program            |
++---------------------------+
+
++---------------------------+
+|       Kernel Space        |
+|---------------------------|
+| Linux Kernel              |
+| Device Drivers            |
+| Memory Manager            |
+| Scheduler                 |
++---------------------------+
+```
+
+## User Space
+
+Applications run here.
+
+They **cannot**
+
+- Access hardware directly
+- Access kernel memory
+- Execute privileged CPU instructions
+
+Instead, they request services from the kernel.
+
+---
+
+## Kernel Space
+
+The kernel runs here with full hardware access.
+
+It can:
+
+- Access RAM
+- Control hardware
+- Execute privileged CPU instructions
+- Manage processes and devices
+
+---
+
+# CPU Privilege Levels
+
+Applications run with **low CPU privilege**.
+
+The kernel runs with **high CPU privilege**.
+
+When an application needs hardware access, the CPU temporarily switches to **Kernel Mode**, performs the requested task, and then returns to **User Mode**.
+
+```text
+Application (User Mode)
+          │
+          ▼
+   System Call
+          │
+          ▼
+CPU switches to Kernel Mode
+          │
+          ▼
+Kernel performs the operation
+          │
+          ▼
+CPU returns to User Mode
+```
+
+---
+
+# C Library
+
+Applications usually do not invoke system calls directly.
+
+They use the **C Library (glibc, musl, etc.)**.
+
+The C Library converts library functions into system calls.
+
+Example:
+
+```c
+printf("Hello");
+```
+
+Internally becomes:
+
+```text
+printf()
+      │
+      ▼
+write()
+      │
+      ▼
+System Call
+      │
+      ▼
+Linux Kernel
+```
+
+---
+
+# POSIX
+
+**POSIX (Portable Operating System Interface)** is a standard that defines a common set of APIs for Unix-like operating systems.
+
+Examples include:
+
+- `read()`
+- `write()`
+- `open()`
+- `close()`
+- `fork()`
+
+Following POSIX allows applications to work across different Unix-like operating systems with minimal changes.
+
+---
+
+# System Call Interface
+
+The **System Call Interface (SCI)** is the gateway between **User Space** and **Kernel Space**.
+
+Example:
+
+```text
+Application
+      │
+      ▼
+write()
+      │
+      ▼
+System Call Interface
+      │
+      ▼
+Linux Kernel
+```
+
+Whenever an application needs a kernel service, it passes through the System Call Interface.
+
+---
+
+# Linux Kernel Architecture
+
+```text
++------------------------------------------------------+
+|                     User Space                       |
+|------------------------------------------------------|
+| Applications | Window Manager | Libraries            |
++------------------------------------------------------+
+|           Kernel Interface (System Calls)            |
++------------------------------------------------------+
+| Process Management | IPC | Virtual File System       |
++------------------------------------------------------+
+| Memory Management | Network | SELinux/AppArmor       |
++------------------------------------------------------+
+| Drivers and Dynamic Modules                          |
++------------------------------------------------------+
+| Architecture-dependent Code                          |
++------------------------------------------------------+
+| Processor Architecture (ARM, x86, RISC-V, etc.)      |
++------------------------------------------------------+
+```
+
+---
+
+# Kernel Subsystems
+
+## Process Management
+
+Responsible for:
+
+- Creating processes
+- Scheduling CPU time
+- Switching between processes
+- Terminating processes
+
+---
+
+## IPC (Inter-Process Communication)
+
+Allows different processes to communicate with one another.
+
+Examples include:
+
+- Pipes
+- Shared Memory
+- Message Queues
+- Signals
+
+---
+
+## Virtual File System (VFS)
+
+Provides a common interface for different file systems.
+
+Linux treats many resources as files, including:
+
+- Files
+- Directories
+- Devices
+- `/proc`
+- `/sys`
+
+---
+
+## Memory Management
+
+Responsible for:
+
+- RAM allocation
+- Freeing memory
+- Virtual memory
+- Paging
+
+---
+
+## Network Subsystem
+
+Handles all networking operations such as:
+
+- Ethernet
+- Wi-Fi
+- TCP/IP
+- UDP
+
+---
+
+## SELinux / AppArmor
+
+Security frameworks that enforce permissions and protect the operating system.
+
+They determine whether an application is allowed to access specific files or resources.
+
+---
+
+## Device Drivers
+
+Drivers allow the kernel to communicate with hardware.
+
+Examples:
+
+- UART Driver
+- SPI Driver
+- I2C Driver
+- USB Driver
+- Keyboard Driver
+- Display Driver
+
+Without device drivers, the kernel cannot control hardware.
+
+---
+
+## Architecture-dependent Code
+
+Contains CPU-specific implementation for different processor architectures.
+
+Examples:
+
+- ARM
+- x86
+- RISC-V
+
+---
+
+# How a Request Travels Through Linux
+
+Whenever an application performs an operation such as printing text, reading a file, or accessing hardware, the request follows this path:
+
+```text
+Application
+      │
+      ▼
+C Library
+      │
+      ▼
+System Call
+      │
+      ▼
+Linux Kernel
+      │
+      ▼
+Device Driver (if required)
+      │
+      ▼
+Hardware
+```
+
+---
+
+# Key Takeaway
+
+Every useful operation performed by an application eventually goes through the Linux Kernel.
+
+Whether it is:
+
+- Printing text
+- Reading or writing files
+- Allocating memory
+- Creating a process
+- Sending network packets
+- Accessing hardware
+
+the kernel is responsible for safely managing and executing the request.
+
+---
+
+# Easy Way to Remember
+
+```text
+Hardware
+   ▲
+Drivers
+   ▲
+Linux Kernel
+   ▲
+System Calls
+   ▲
+C Library
+   ▲
+Applications
+```
+
+This layered architecture shows how applications safely communicate with hardware through the Linux Kernel.
 
 
