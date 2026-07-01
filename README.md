@@ -310,15 +310,5 @@ root=/dev/mmcblk0p2
 
 ---
 
-# Key Takeaways
 
-- A toolchain converts source code into executable machine code.
-- Cross-compilation is commonly used in Embedded Linux.
-- Yocto generates a complete Embedded Linux system.
-- The CPU wakes up first when power is applied.
-- The CPU executes the ROM Code first.
-- ROM Code loads SPL.
-- SPL initializes RAM and loads U-Boot.
-- U-Boot loads the Linux kernel into RAM.
-- The CPU executes the Linux kernel.
-- Modern Linux systems use a Device Tree Blob (DTB) to describe hardware.
+
