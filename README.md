@@ -715,4 +715,257 @@ Applications
 
 This layered architecture shows how applications safely communicate with hardware through the Linux Kernel.
 
+# Root File System (RootFS)
+
+## Overview
+
+The **Root File System (RootFS)** is the top-level directory structure in Linux. It is represented by a forward slash (`/`) and acts as the starting point for every file and directory in the system.
+
+Unlike Windows, Linux organizes everything under a **single directory tree**.
+
+> Every file, directory, application, and device can be accessed starting from the root (`/`).
+
+---
+
+## Why is it Called Root?
+
+The root (`/`) is called the **root** because it is the highest directory in the Linux filesystem hierarchy.
+
+Example:
+
+```text
+/
+├── bin
+├── dev
+├── etc
+├── home
+├── lib
+└── usr
+```
+
+Every directory branches out from the root, just like branches grow from the trunk of a tree.
+
+---
+
+## Hierarchical Directory Structure
+
+Linux follows a **hierarchical directory structure**, where directories are arranged in parent-child relationships.
+
+Example:
+
+```text
+/
+└── home
+    └── neeraj
+        └── Documents
+            └── notes.txt
+```
+
+This structure makes it easy to organize and locate files.
+
+---
+
+## Root Directory (`/`)
+
+The root directory contains all the essential files and directories required by Linux.
+
+It stores:
+
+- System directories
+- Applications
+- Libraries
+- Device files
+- User files
+- Configuration files
+
+The Linux kernel accesses these directories during system startup and normal operation.
+
+---
+
+## Important Directories
+
+### `/bin`
+
+Contains essential user commands.
+
+Examples:
+
+- `ls`
+- `cp`
+- `mv`
+- `cat`
+- `pwd`
+
+---
+
+### `/dev`
+
+Contains device files that represent hardware and virtual devices.
+
+Examples:
+
+```text
+/dev/sda
+/dev/sda1
+/dev/null
+/dev/tty
+```
+
+Linux follows the philosophy:
+
+> **Everything is a file.**
+
+---
+
+### `/etc`
+
+Contains system configuration files.
+
+Examples:
+
+- Network configuration
+- Hostname
+- User configuration
+
+---
+
+### `/home`
+
+Stores personal files for each user.
+
+Example:
+
+```text
+/home/neeraj
+```
+
+Contains:
+
+- Documents
+- Downloads
+- Pictures
+- Music
+
+---
+
+### `/usr`
+
+Contains installed software, applications, and shared resources.
+
+Examples:
+
+- GCC
+- Python
+- Vim
+
+---
+
+### `/lib`
+
+Contains shared libraries required by programs and the Linux kernel.
+
+---
+
+## Mount Points
+
+A **mount point** is a directory where another filesystem is attached.
+
+Example:
+
+```text
+/
+├── home
+├── usr
+└── media
+    └── USB
+```
+
+When a USB drive is mounted, it becomes part of the Linux directory tree.
+
+---
+
+## Virtual Directory Structure
+
+Linux presents all storage devices as one unified directory tree.
+
+Even if files are stored on different hard disks, SSDs, or USB drives, they appear under the same root directory (`/`).
+
+This is called the **Virtual Directory Structure**.
+
+---
+
+## Path Names
+
+A **path** specifies the location of a file or directory.
+
+Example:
+
+```text
+/home/neeraj/Documents/Linux/notes.txt
+```
+
+Each `/` means "go inside the next directory."
+
+---
+
+## Applications
+
+Applications are programs that run in **user space**.
+
+Examples:
+
+- Firefox
+- VS Code
+- Calculator
+- VLC
+- Custom C Programs
+
+Applications request services from the Linux kernel using **system calls**.
+
+---
+
+## Summary
+
+- Root File System (RootFS) starts at `/`.
+- Linux uses a hierarchical directory structure.
+- Every file and directory exists under the root.
+- Important directories include `/bin`, `/dev`, `/etc`, `/home`, `/usr`, and `/lib`.
+- `/dev` contains device files for hardware and virtual devices.
+- Mount points allow additional filesystems to become part of the directory tree.
+- Linux presents multiple storage devices as one virtual directory structure.
+- Every file is accessed using a path that starts from the root directory.
+
+---
+
+## Common Commands
+
+```bash
+# Show current directory
+pwd
+
+# List files
+ls
+
+# List root directory
+ls /
+
+# List device files
+ls /dev
+
+# Show storage devices
+lsblk
+
+# Display mounted filesystems
+mount
+```
+
+---
+
+## Key Takeaways
+
+- Root (`/`) is the starting point of the Linux filesystem.
+- Every directory and file is organized in a tree-like structure.
+- Linux combines all storage devices into one unified filesystem.
+- Understanding RootFS is essential for learning Linux and Embedded Linux.
+
 
